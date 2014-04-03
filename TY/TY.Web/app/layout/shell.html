@@ -1,0 +1,36 @@
+﻿<div data-ng-controller="shell as vm">
+
+    <div data-ng-include="'/app/layout/topnav.html'"></div>
+
+    <div class="main-container" id="main-container">
+        <script type="text/javascript">
+            try { ace.settings.check('main-container', 'fixed') } catch (e) { }
+        </script>
+
+        <div class="main-container-inner">
+
+            <a class="menu-toggler" id="menu-toggler" href="#">
+                <span class="menu-text"></span>
+            </a>
+
+            <div data-ng-include="'/app/layout/sidebar.html'"></div>
+
+            <div class="main-content">
+                <div class="page-content">
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <!-- PAGE CONTENT BEGINS -->
+                            <div data-ng-view class="shuffle-animation"></div>
+                            <!-- PAGE CONTENT ENDS -->
+                        </div><!-- /.col -->
+                    </div><!-- /.row -->
+                </div><!-- /.page-content -->
+            </div><!-- /.main-content -->
+
+            <div data-ng-show="vm.isBusy" class="page-splash dissolve-animation">
+                <div data-cc-spinner="vm.spinnerOptions"></div>
+                <div class="page-splash-message page-splash-message-subtle">{{vm.busyMessage}}</div>
+            </div>
+        </div><!-- /.main-container-inner -->
+    </div><!-- /.main-container -->
+</div>

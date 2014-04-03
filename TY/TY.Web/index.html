@@ -1,0 +1,130 @@
+﻿<!DOCTYPE html>
+<html data-ng-app="app">
+
+<head>
+    <style>
+        /* This helps the ng-show/ng-hide animations start at the right place. */
+        /* Since Angular has this but needs to load, this gives us the class early. */
+        .ng-hide {
+            display: none!important;
+        }
+    </style>
+    <title data-ng-bind="title">TartisiYorum.com</title>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <link href="content/bootstrap.min.css" rel="stylesheet" />
+    <link href="content/font-awesome.min.css" rel="stylesheet" />
+
+    <!--[if IE 7]>
+          <link rel="stylesheet" href="assets/css/font-awesome-ie7.min.css" />
+        <![endif]-->
+    <!-- page specific plugin styles -->
+    <!-- fonts -->
+
+    <link rel="stylesheet" href="content/ace-fonts.css" />
+
+    <!-- ace styles -->
+
+    <link rel="stylesheet" href="content/ace.min.css" />
+    <link rel="stylesheet" href="content/ace-rtl.min.css" />
+    <link rel="stylesheet" href="content/ace-skins.min.css" />
+
+    <!--[if lte IE 8]>
+      <link rel="stylesheet" href="content/ace-ie.min.css" />
+    <![endif]-->
+    <!-- inline styles related to this page -->
+    <!-- ace settings handler -->
+
+    <script src="scripts/ace-extra.min.js"></script>
+
+    <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!--[if lt IE 9]>
+    <script src="scripts/html5shiv.js"></script>
+    <script src="scripts/respond.min.js"></script>
+    <![endif]-->
+
+    <link href="content/ie10mobile.css" rel="stylesheet" />
+    <link href="content/toastr.css" rel="stylesheet" />
+    <link href="content/customtheme.css" rel="stylesheet">
+    <!--<link href="content/styles.css" rel="stylesheet" />-->
+    <link href="content/breeze.directives.css" rel="stylesheet" />
+</head>
+
+<body>
+    <div data-ng-include="'/app/layout/shell.html'"></div>
+
+    <div id="splash-page" data-ng-show="false">
+        <div class="page-splash">
+            <div class="page-splash-message">
+                TartisiYorum.com
+            </div>
+            <div class="progress progress-striped active page-progress-bar">
+                <div class="bar"></div>
+            </div>
+        </div>
+    </div>
+
+    <span data-cc-scroll-to-top></span>
+
+    <!-- Vendor Scripts -->
+    <!--[if !IE]> -->
+
+    <script type="text/javascript">
+        window.jQuery || document.write("<script src='scripts/jquery-2.0.3.min.js'>" + "<" + "/script>");
+    </script>
+
+    <!-- <![endif]-->
+
+    <!--[if IE]>
+    <script type="text/javascript">
+     window.jQuery || document.write("<script src='scripts/jquery-1.10.2.min.js'>"+"<"+"/script>");
+    </script>
+    <![endif]-->
+
+    <script type="text/javascript">
+        if ("ontouchend" in document) document.write("<script src='scripts/jquery.mobile.custom.min.js'>" + "<" + "/script>");
+    </script>
+    <script src="scripts/angular.js"></script>
+    <script src="scripts/angular-animate.js"></script>
+    <script src="scripts/angular-route.js"></script>
+    <script src="scripts/angular-sanitize.js"></script>
+    <script src="scripts/bootstrap.min.js"></script>
+    <script src="scripts/typeahead-bs2.min.js"></script>
+    <script src="scripts/toastr.js"></script>
+    <script src="scripts/moment.js"></script>
+    <script src="scripts/ui-bootstrap-tpls-0.10.0.js"></script>
+    <script src="scripts/spin.js"></script>
+    <script src="scripts/breeze.debug.js"></script>
+    <script src="scripts/breeze.angular.js"></script>
+    <script src="scripts/breeze.directives.js"></script>
+    <script src="scripts/breeze.saveErrorExtensions.js"></script>
+    <script src="scripts/ace-elements.min.js"></script>
+    <script src="scripts/ace.min.js"></script>
+
+    <!-- Bootstrapping -->
+    <script src="app/app.js"></script>
+    <script src="app/config.js"></script>
+    <script src="app/config.exceptionHandler.js"></script>
+    <script src="app/config.route.js"></script>
+
+    <!-- common Modules -->
+    <script src="app/common/common.js"></script>
+    <script src="app/common/logger.js"></script>
+    <script src="app/common/spinner.js"></script>
+
+    <!-- common.bootstrap Modules -->
+    <script src="app/common/bootstrap/bootstrap.dialog.js"></script>
+
+    <!-- app -->
+    <script src="app/admin/admin.js"></script>
+    <script src="app/dashboard/dashboard.js"></script>
+    <script src="app/layout/shell.js"></script>
+    <script src="app/layout/sidebar.js"></script>
+
+    <!-- app Services -->
+    <script src="app/services/datacontext.js"></script>
+    <script src="app/services/directives.js"></script>
+    <script src="app/services/entityManagerFactory.js"></script>
+</body>
+</html>

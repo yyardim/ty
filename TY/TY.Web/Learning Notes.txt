@@ -1,0 +1,254 @@
+﻿ANGULAR
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+MODULES
+A module is a collection of configuration and run blocks which get applied to the application during 
+the bootstrap process. In its simplest form the module consist of collection of two kinds of blocks:
+- Configuration blocks
+- Run blocks:
+angular.module('myModule', []).
+  config(function(injectables) { // provider-injector
+    // You can only inject Providers (not instances) into config blocks.
+  }).
+  run(function(injectables) { // instance-injector
+    // You can only inject instances (not Providers) into run blocks
+  });
+So in our case, we have an app module and a config module. config runs first, then app runs.
+---------------------------------------------------------------------------------------------------
+{http://docs.angularjs.org/guide/providers}
+In order for the injector to know how to create and wire together all of these objects, it needs a 
+registry of "recipes". Each recipe has an identifier of the object and the description of how to create 
+this object.
+Each recipe belongs to an Angular module. An Angular module is a bag that holds one or more recipes. 
+A module can contain information about dependencies on other modules as well.
+When an Angular application starts with a given application module, Angular creates a new instance of 
+injector, which in turn creates a registry of recipes as a union of all recipes defined in the core 
+"ng" module, application module and its dependencies. The injector then consults the recipe registry 
+when it needs to create an object for your application.
+
+Value Recipe
+---------------
+var myApp = angular.module('myApp', []);
+myApp.value('clientId', 'a12345654321x');
+
+myApp.controller('DemoController', ['clientId', function DemoController(clientId) {
+  this.clientId = clientId;
+}]);
+
+<html ng-app="myApp">
+  <body ng-controller="DemoController as demo">
+    Client ID: {{demo.clientId}}
+  </body>
+</html>
+
+Factory Recipe
+---------------
+The Factory recipe is a sibling of Value Recipe but more powerful. It adds the following abilities:
+- ability to use other services (have dependencies)
+- service initialization
+- delayed/lazy initialization
+The Factory recipe constructs a new service using a function with zero or more arguments (these are 
+dependencies on other services). The return value of this function is the service instance created by this recipe.
+
+myApp.value('clientId', 'a12345654321x');
+myApp.factory('apiToken', ['clientId', function apiTokenFactory(clientId) {
+  var encrypt = function(data1, data2) {
+    // NSA-proof encryption algorithm:
+    return (data1 + ':' + data2).toUpperCase();
+  };
+ 
+  var secret = window.localStorage.getItem('myApp.secret');
+  var apiToken = encrypt(clientId, secret);
+ 
+  return apiToken;
+}]);
+
+Service Recipe
+---------------
+The Service recipe produces a service just like the Value or Factory recipes, but it does so by 
+invoking a constructor with the new operator. The constructor can take zero or more arguments, which 
+represent dependencies needed by the instance of this type.
+
+Provider Recipe
+---------------
+The Provider recipe is the core recipe type and all the other recipe types are just syntactic sugar on 
+top of it. It is the most verbose recipe with the most abilities, but for most services it's overkill.
+
+Provider recipe is syntactically defined as a custom type that implements a $get method.
+
+You should use the Provider recipe only when you want to expose an API for application-wide 
+configuration that must be made before the application starts. 
+
+Constant Recipe
+---------------
+Angular splits the life-cycle into configuration phase and run phase and how you can provide configuration 
+to your application via the config function. Since the config function runs in the configuration phase 
+when no services are available, it doesn't have access even to simple value objects created via Value recipe.
+
+Since simple values, like url prefix, don't have dependencies or configuration, it is often handy to make 
+them available in both the configuration and run phases. This is what the Constant recipe is for.
+
+
+---------------------------------------------------------------------------------------------------
+SCOPE {http://docs.angularjs.org/guide/scope}
+$rootScope: Every application has a single root scope. All other scopes are descendant scopes of the 
+			root scope. Scopes provide separation between the model and the view, via a mechanism for 
+			watching the model for changes. They also provide an event emission/broadcast and 
+			subscription facility
+- Scopes can propagate events in similar fashion to DOM events. 
+	The event can be broadcasted ($broadcast) to the scope children 
+	or emitted ($emit) to scope parents as: 
+	$scope.$on('MyFunc',function(){
+	$scope.blabla;
+	});
+
+- The normal flow of a browser receiving an event is that it executes a corresponding JavaScript callback. 
+	Once the callback completes, the browser re-renders the DOM and returns to waiting for more events.
+	When the browser calls into JavaScript the code executes outside the Angular execution context, 
+	which means that Angular is unaware of model modifications. To properly process model modifications 
+	the execution has to enter the Angular execution context using the $apply method. Only model 
+	modifications which execute inside the $apply method will be properly accounted for by Angular. 
+	For example if a directive listens on DOM events, such as ng-click, it must evaluate the expression 
+	inside the $apply method.
+	
+	After evaluating the expression, the $apply method performs a $digest. In the $digest phase the 
+	scope examines all of the $watch expressions and compares them with the previous value. 
+	This dirty checking is done asynchronously. This means that assignment such as $scope.username="angular" 
+	will not immediately cause a $watch to be notified, instead the $watch notification is delayed 
+	until the $digest phase. This delay is desirable, since it coalesces multiple model updates into 
+	one $watch notification as well as it guarantees that during the $watch notification no other 
+	$watches are running. If a $watch changes the value of the model, it will force additional $digest cycle.
+
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+Angular Directives
+---------------------------------------------------------------------------------------------------
+$compile can match directives based on element names, attributes, class names, as well as comments.
+restrict: {A:Attribute; E:Element; C:Class; M:Comment}
+
+<div data-cc-widget-header title="{{vm.title}}"></div>
+
+app.directive('ccWidgetHeader',function(){
+	var directive = {
+		link: link,
+		scope: {
+			'title': '@'
+		},
+		templateUrl: '/app/layout/widgetheader.html',
+		restrict: 'A'
+	};
+	return directive;
+
+	function link(scope,element,attrs) {
+		attrs.$set('class', 'widget-head');
+	}
+});
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+
+GIT
+---------------------------------------------------------------------------------------------------
+Commands:
+git: lists all commands
+git config --global user.name "Yener Yardim"		| changes user globally
+git config --global user.email "yyardim@gmail.com"	| changes user email globally
+git config --global --list							| lists global settings
+
+To create local repo, go to local folder [c:\Users\yyardim\Dropbox\git>] and type 
+git init
+git add *.*
+git commit -m "initial commit to master branch"
+git status
+git log			|details of all changes
+git shortlog	
+git show [changeset_id] => gives full details
+
+// To save in repo without committing, use "stash" command. This is like shelf command in tfs.
+git stash	=> resets your files back to their original files and saves your changes in a stash.
+
+// once you want to go back to your changes:
+git stash apply		=> reverts the files back to their changed states
+
+// if I decide to change only some files but not all, use checkout command with filenames that don't need changes
+git checkout "file1.txt"
+
+// I can now stage my file and commit it
+git add *.txt
+git commit -m "stashed changes"
+
+// let's say you changed file1.txt and want to include in your commit, use [amend] command,
+git add "file1.txt"
+git commit --amend
+
+// to see the details of the commit:
+git show changeset#
+
+// To create a tag to tag your version and all and keep coding from there:
+git tag -a v1.0 -m "Stable Version 1"
+// Then to see the tag:
+git show v1.0
+
+Branching/Merging
+---------------------------------------------------------------------------------------------------
+// Branching is for trying an idea without effecting the rest of your code.
+// Fast-forward: If no changes happened in master branch, it keeps the same changeset #
+// Merge-commit: If there're changes in master branch when merging changes, git resolves conflicts
+//				 prior to merge. A new changeset is created.
+// Rebase: When you have commits in both branch and master, you can do rebase, and your master changes
+		   will go away when merged.
+
+git branch v2.0
+
+// to switch to that branch:
+git checkout v2.0
+
+// remember, there will not be new directory for the branch. Just files will change as you switch between 
+// branches using the [checkout] command
+// when done with changes, stage them and commit them
+git add *.txt
+git commit -m "v2 changes"
+
+// to switch back to master
+git checkout master
+
+// to merge from v2.0 into master branch:
+git merge v2.0
+
+// when working in a team, you have a shared repository and everyone retrieve code from there
+// to retrieve code from share repo, you use [pull] command
+// then make local changes
+// then commit locally (multiple times)
+// maybe branch and merge locally
+// then you submit another pull request to resolve any conflict that other coders might commit to your local repo
+// then you do another pull to resolve any conflict with the centralized repo
+// then you can push your changes to central repo.
+
+GitHub
+--------------------------
+Remote repository
+Collaboration hub
+Synchronize full history
+
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+NOTES TO REMEMBER
+- ccSidebar directive in the sidebar is removed. It looks like it's for dropdown, hide stuff. Not sure
+if needed. Check if needed later. 
+in sidebar.html:
+	[<div data-cc-sidebar data-ng-controller="sidebar as vm">]
+
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+Bootstraps that I liked:
+- Ace - BOUGHT THIS ONE! - 03/27/2014
+- SmartAdmin
+- Lanceng
+- Flatty
+- Aqueena - Admin Theme
+- Prometheus
+- Mbooh
+---------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------------------------------------
+Visual Studio Extensions
+- Git Source Control Provider
+- Git Extensions
